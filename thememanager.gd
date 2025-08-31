@@ -1,3 +1,4 @@
+@tool
 extends Node
 
 signal theme_changed(new_theme: GameTheme)

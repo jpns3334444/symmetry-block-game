@@ -10,18 +10,25 @@ var visual_tiles: Dictionary
 func _ready():
     grid_state = GridState.new()
     visual_tiles = {}
-    game_theme = ThemeManager.get_current_theme()
-    
+
     apply_board_theme()
     spawn_tile(1)
     spawn_tile(2)
 
 func apply_board_theme():
+    print("apply_board_theme called")
+    print("game_theme.board_background_scene: ", game_theme.board_background_scene)
+    
     # Add the board visual scene as background
     if game_theme.board_background_scene:
+        print("Creating board background instance")
         var board_visual = game_theme.board_background_scene.instantiate()
+        print("Board visual created: ", board_visual)
         add_child(board_visual)
+        print("Board visual added as child")
         move_child(board_visual, 0)  # Behind tiles
+    else:
+        print("No board_background_scene found!")
 
 func spawn_tile(tile_type: int):
     # Find empty spots that can fit this tile size
@@ -43,23 +50,33 @@ func spawn_tile(tile_type: int):
     
     # Add to logic
     var tile_id = grid_state.place_tile(grid_pos, tile_size)
-    
-    # Create themed visual tile
     var tile = game_theme.tile_scene.instantiate()
-    var pixel_size = Vector2(tile_type * game_theme.cell_size, game_theme.cell_size)
-    tile.scale = pixel_size / Vector2(100, 100)
-    tile.position = grid_to_world_position(grid_pos)
+    
+    # Scale tile based on theme tile_size
+    var scale_factor = game_theme.tile_size / 100.0  # Assuming tile scene is 100x100
+    tile.scale = Vector2(tile_type * scale_factor, scale_factor)
+    
+    tile.position = grid_to_world_position(grid_pos, Vector2i(tile_type, 1))
     add_child(tile)
     
     # Track it
     visual_tiles[tile_id] = tile
 
-func grid_to_world_position(grid_pos: Vector2i) -> Vector2:
-    var effective_scale = transform.get_scale()
-    var cell_width = (400.0 * effective_scale.x) / GridState.GRID_WIDTH  # 400 = your base board width
-    var cell_height = (400.0 * effective_scale.y) / GridState.GRID_HEIGHT # 400 = your base board height
+func grid_to_world_position(grid_pos: Vector2i, tile_size: Vector2i = Vector2i(1,1)) -> Vector2:
+    var cell_width = 400.0 / GridState.GRID_WIDTH   
+    var cell_height = 400.0 / GridState.GRID_HEIGHT 
     
-    return Vector2(grid_pos.x * cell_width, grid_pos.y * cell_height)
+    # Calculate the center of the tile's occupied area
+    var tile_center_offset_x = (tile_size.x - 1) * cell_width / 2.0
+    var tile_center_offset_y = (tile_size.y - 1) * cell_height / 2.0
+    
+    var start_x = -200.0 + cell_width / 2.0   
+    var start_y = -200.0 + cell_height / 2.0  
+    
+    return Vector2(
+        start_x + grid_pos.x * cell_width + tile_center_offset_x,
+        start_y + grid_pos.y * cell_height + tile_center_offset_y
+    )
 
 func _input(event: InputEvent):
     var movements = {}

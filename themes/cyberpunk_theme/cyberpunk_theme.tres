@@ -12,4 +12,7 @@ board_background_scene = ExtResource("1_kqum3")
 particle_effects = {}
 sound_effects = {}
 game_settings = {}
+cell_size = 100
+tile_size = 90
+board_size = Vector2i(400, 400)
 metadata/_custom_type_script = "uid://corcc5eybqccu"

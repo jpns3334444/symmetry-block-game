@@ -6,8 +6,10 @@ class_name GameTheme
 @export var tile_scene: PackedScene
 @export var board_background_scene: PackedScene
 @export var placeholder_scene: PackedScene
-@export var ui_theme: Theme  # For buttons, labels, etc.
-@export var particle_effects: Dictionary = {}  # Match effects, etc.
-@export var sound_effects: Dictionary = {}     # Audio theming
-@export var game_settings: Dictionary = {}     # Gameplay tweaks per theme
-@export var cell_size: int = 1
+@export var ui_theme: Theme
+@export var particle_effects: Dictionary = {}
+@export var sound_effects: Dictionary = {}
+@export var game_settings: Dictionary = {}
+@export var cell_size: int = 100
+@export var tile_size: int = 90  # Add this line
+@export var board_size: Vector2i = Vector2i(400, 400)

@@ -1,3 +1,4 @@
+@tool
 class_name Board
 extends Node2D
 
@@ -54,7 +55,11 @@ func spawn_tile(tile_type: int):
     visual_tiles[tile_id] = tile
 
 func grid_to_world_position(grid_pos: Vector2i) -> Vector2:
-    return game_theme.grid_offset + Vector2(grid_pos.x * game_theme.cell_size, grid_pos.y * game_theme.cell_size)
+    var effective_scale = transform.get_scale()
+    var cell_width = (400.0 * effective_scale.x) / GridState.GRID_WIDTH  # 400 = your base board width
+    var cell_height = (400.0 * effective_scale.y) / GridState.GRID_HEIGHT # 400 = your base board height
+    
+    return Vector2(grid_pos.x * cell_width, grid_pos.y * cell_height)
 
 func _input(event: InputEvent):
     var movements = {}

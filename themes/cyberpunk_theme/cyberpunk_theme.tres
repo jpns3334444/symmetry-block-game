@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="GameTheme" load_steps=4 format=3 uid="uid://c02dp807jy71y"]
+
+[ext_resource type="PackedScene" uid="uid://bm0h5o3adnntd" path="res://themes/cyberpunk_theme/cyberpunk_board.tscn" id="1_kqum3"]
+[ext_resource type="Script" uid="uid://corcc5eybqccu" path="res://gametheme.gd" id="2_awdq2"]
+[ext_resource type="PackedScene" uid="uid://dlkbee0dvu74c" path="res://themes/cyberpunk_theme/cyberpunk_tile.tscn" id="3_wp8l8"]
+
+[resource]
+script = ExtResource("2_awdq2")
+theme_name = "Default"
+tile_scene = ExtResource("3_wp8l8")
+board_background_scene = ExtResource("1_kqum3")
+particle_effects = {}
+sound_effects = {}
+game_settings = {}
+metadata/_custom_type_script = "uid://corcc5eybqccu"

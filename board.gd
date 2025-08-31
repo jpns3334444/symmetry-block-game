@@ -1,19 +1,26 @@
 class_name Board
 extends Node2D
 
-var grid_state: GridState
-var visual_tiles: Dictionary  # tile_id -> Tile node
+@export var game_theme: GameTheme
 
-const CELL_SIZE = 100
-const GRID_OFFSET = Vector2(50, 50)  # Where grid starts on screen
+var grid_state: GridState
+var visual_tiles: Dictionary
 
 func _ready():
     grid_state = GridState.new()
     visual_tiles = {}
+    game_theme = ThemeManager.get_current_theme()
     
-    # Spawn a couple test tiles
+    apply_board_theme()
     spawn_tile(1)
     spawn_tile(2)
+
+func apply_board_theme():
+    # Add the board visual scene as background
+    if game_theme.board_background_scene:
+        var board_visual = game_theme.board_background_scene.instantiate()
+        add_child(board_visual)
+        move_child(board_visual, 0)  # Behind tiles
 
 func spawn_tile(tile_type: int):
     # Find empty spots that can fit this tile size
@@ -36,9 +43,10 @@ func spawn_tile(tile_type: int):
     # Add to logic
     var tile_id = grid_state.place_tile(grid_pos, tile_size)
     
-    # Create visual
-    var tile = Tile.new()
-    tile.setup(tile_id, tile_type)
+    # Create themed visual tile
+    var tile = game_theme.tile_scene.instantiate()
+    var pixel_size = Vector2(tile_type * game_theme.cell_size, game_theme.cell_size)
+    tile.scale = pixel_size / Vector2(100, 100)
     tile.position = grid_to_world_position(grid_pos)
     add_child(tile)
     
@@ -46,7 +54,7 @@ func spawn_tile(tile_type: int):
     visual_tiles[tile_id] = tile
 
 func grid_to_world_position(grid_pos: Vector2i) -> Vector2:
-    return GRID_OFFSET + Vector2(grid_pos.x * CELL_SIZE, grid_pos.y * CELL_SIZE)
+    return game_theme.grid_offset + Vector2(grid_pos.x * game_theme.cell_size, grid_pos.y * game_theme.cell_size)
 
 func _input(event: InputEvent):
     var movements = {}
